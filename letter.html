@@ -1,0 +1,729 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>My Letter 💌 — For NIII</title>
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+	<style>
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		.letter-page {
+			min-height: 100vh;
+			background: #0f0f0f;
+			position: relative;
+			overflow-x: hidden;
+		}
+		.letter-bg {
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			pointer-events: none;
+			z-index: 0;
+		}
+		.letter-bg-gradient {
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(155, 89, 182, 0.25) 0%, transparent 50%),
+			            radial-gradient(ellipse 80% 50% at 80% 80%, rgba(232, 160, 184, 0.2) 0%, transparent 45%),
+			            radial-gradient(ellipse 60% 60% at 20% 60%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+			animation: letter-bg-pulse 10s ease-in-out infinite alternate;
+		}
+		@keyframes letter-bg-pulse {
+			0% { opacity: 0.8; }
+			100% { opacity: 1; }
+		}
+		.letter-bg-hearts { position: absolute; inset: 0; }
+		.letter-bg-hearts span {
+			position: absolute;
+			font-size: 20px;
+			opacity: 0.15;
+			animation: letter-heart-float 20s ease-in-out infinite;
+		}
+		@keyframes letter-heart-float {
+			0%, 100% { transform: translate(0, 0) scale(0.8); opacity: 0.1; }
+			50% { transform: translate(15px, -20px) scale(1.1); opacity: 0.2; }
+		}
+
+		.letter-container {
+			position: relative;
+			z-index: 1;
+			padding: 2rem 1rem 4rem;
+			max-width: 640px;
+			margin: 0 auto;
+		}
+		.back-wrap {
+			text-align: left;
+			margin-bottom: 2rem;
+		}
+		.btn-back {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 12px 24px;
+			background: rgba(196, 69, 105, 0.2);
+			color: #e8a0b8;
+			border: 1px solid rgba(232, 160, 184, 0.5);
+			border-radius: 30px;
+			text-decoration: none;
+			font-family: 'Outfit', sans-serif;
+			font-size: 14px;
+			font-weight: 500;
+			transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+		}
+		.btn-back:hover {
+			background: rgba(196, 69, 105, 0.35);
+			transform: translateX(-4px);
+			box-shadow: 0 4px 20px rgba(232, 160, 184, 0.2);
+			color: #f5f0e6;
+		}
+
+		/* Envelope */
+		.envelope-wrap {
+			perspective: 800px;
+			margin-bottom: 2rem;
+			text-align: center;
+		}
+		.envelope {
+			position: relative;
+			width: 200px;
+			height: 120px;
+			margin: 0 auto 1.5rem;
+			transition: transform 0.6s ease;
+		}
+		.envelope.open {
+			transform: rotateX(-120deg);
+			transform-style: preserve-3d;
+		}
+		.envelope-flap {
+			position: absolute;
+			top: 0; left: 0;
+			width: 0; height: 0;
+			border-left: 100px solid transparent;
+			border-right: 100px solid transparent;
+			border-top: 60px solid rgba(212, 175, 55, 0.3);
+			transform-origin: 50% 0;
+			transition: transform 0.8s ease;
+		}
+		.envelope.open .envelope-flap {
+			transform: rotateX(180deg);
+		}
+		.envelope-body {
+			position: absolute;
+			bottom: 0; left: 10px; right: 10px;
+			height: 80px;
+			background: rgba(232, 160, 184, 0.15);
+			border: 1px solid rgba(212, 175, 55, 0.4);
+			border-radius: 0 0 8px 8px;
+		}
+
+		/* Letter paper */
+		.letter-paper-wrap {
+			opacity: 0;
+			transform: translateY(30px) scale(0.98);
+			transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
+			pointer-events: none;
+		}
+		.letter-paper-wrap.visible {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+			pointer-events: auto;
+		}
+		.letter-paper {
+			background: linear-gradient(180deg, #f5f0e6 0%, #ebe5d8 100%);
+			border: 1px solid #d4c4a8;
+			border-radius: 8px;
+			padding: 2.5rem 2rem;
+			box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(212, 196, 168, 0.3);
+		}
+
+		/* ✅ IMAGE STYLES */
+		.letter-image {
+			width: 100%;
+			height: auto;
+			border-radius: 6px;
+			display: block;
+			margin: 0 auto;
+		}
+
+		/* Fallback message if image fails */
+		.img-error-msg {
+			display: none;
+			text-align: center;
+			color: #c44569;
+			font-family: 'Outfit', sans-serif;
+			font-size: 14px;
+			padding: 2rem;
+			border: 2px dashed rgba(196, 69, 105, 0.4);
+			border-radius: 8px;
+			margin-top: 1rem;
+		}
+
+		.btn-download {
+			display: inline-block;
+			margin-top: 1.5rem;
+			padding: 12px 28px;
+			border: 2px solid #c44569;
+			color: #c44569;
+			background: transparent;
+			border-radius: 30px;
+			font-family: 'Outfit', sans-serif;
+			font-size: 14px;
+			text-decoration: none;
+			transition: background 0.3s, color 0.3s;
+		}
+		.btn-download:hover {
+			background: rgba(196, 69, 105, 0.2);
+			color: #e8a0b8;
+		}
+
+		@media print {
+			.letter-bg, .back-wrap, .envelope-wrap, .btn-download { display: none !important; }
+			.letter-page { background: #fff; }
+			.letter-paper-wrap { opacity: 1 !important; transform: none !important; }
+			.letter-paper { box-shadow: none; border: 1px solid #ccc; }
+		}
+	</style>
+</head>
+<body class="letter-page">
+
+	<div class="letter-bg">
+		<div class="letter-bg-gradient"></div>
+		<div class="letter-bg-hearts" id="letter-hearts"></div>
+	</div>
+
+	<div class="letter-container">
+
+		<div class="back-wrap">
+			<a href="index.html" class="btn-back">← Back to surprise</a>
+		</div>
+
+		<div class="envelope-wrap">
+			<div class="envelope" id="envelope">
+				<div class="envelope-flap"></div>
+				<div class="envelope-body"></div>
+			</div>
+		</div>
+
+		<div class="letter-paper-wrap" id="letter-paper-wrap">
+			<div class="letter-paper">
+
+				<!-- ✅ IMAGE — change "letter.jpg" to your actual filename -->
+				<!-- <img
+					src="images/cakeee.jpg"
+					alt="Birthday Letter"
+					class="letter-image"
+					id="letter-img"
+					onerror="this.style.display='none'; document.getElementById('img-error').style.display='block';"
+				> -->
+
+				<!-- Shows if image fails to load -->
+				<!-- <div class="img-error-msg" id="img-error">
+					⚠️ Image not found!<br><br>
+					Please make sure your image file (e.g. <strong>letter.jpg</strong>) is in the
+					<strong>same folder</strong> as this HTML file.<br><br>
+					Then update the <code>src="letter.jpg"</code> in the code to match your exact filename.
+				</div>
+
+				 ✅ Download button — change href to your actual image filename -->
+				<!-- <a href="letter.jpg" download="birthday-letter.jpg" class="btn-download">
+					⬇ Download JPG
+				</a>
+
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		(function () { --> 
+			<!-- // Floating hearts
+			var heartsEl = document.getElementById('letter-hearts');
+			if (heartsEl) {
+				var symbols = ['❤️', '💕', '💗', '💖'];
+				for (var i = 0; i < 12; i++) {
+					var h = document.createElement('span');
+					h.textContent = symbols[i % symbols.length];
+					h.style.left = Math.random() * 100 + '%';
+					h.style.top = Math.random() * 100 + '%';
+					h.style.animationDelay = (Math.random() * 5) + 's';
+					heartsEl.appendChild(h);
+				}
+			}
+
+			// Envelope open then letter fade-in
+			var envelope = document.getElementById('envelope');
+			var letterWrap = document.getElementById('letter-paper-wrap');
+			if (envelope && letterWrap) {
+				setTimeout(function () {
+					envelope.classList.add('open');
+				}, 400);
+				setTimeout(function () {
+					letterWrap.classList.add('visible');
+				}, 1100);
+			} -->
+		<!-- })();
+	</script>
+
+</body>
+</html> --> 
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>My Letter 💌 — For NIII</title>
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+	<style>
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		.letter-page {
+			min-height: 100vh;
+			background: #0f0f0f;
+			position: relative;
+			overflow-x: hidden;
+		}
+		.letter-bg {
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			pointer-events: none;
+			z-index: 0;
+		}
+		.letter-bg-gradient {
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(155, 89, 182, 0.25) 0%, transparent 50%),
+			            radial-gradient(ellipse 80% 50% at 80% 80%, rgba(232, 160, 184, 0.2) 0%, transparent 45%),
+			            radial-gradient(ellipse 60% 60% at 20% 60%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+			animation: letter-bg-pulse 10s ease-in-out infinite alternate;
+		}
+		@keyframes letter-bg-pulse {
+			0% { opacity: 0.8; }
+			100% { opacity: 1; }
+		}
+		.letter-bg-hearts { position: absolute; inset: 0; }
+		.letter-bg-hearts span {
+			position: absolute;
+			font-size: 20px;
+			opacity: 0.15;
+			animation: letter-heart-float 20s ease-in-out infinite;
+		}
+		@keyframes letter-heart-float {
+			0%, 100% { transform: translate(0, 0) scale(0.8); opacity: 0.1; }
+			50% { transform: translate(15px, -20px) scale(1.1); opacity: 0.2; }
+		}
+
+		.letter-container {
+			position: relative;
+			z-index: 1;
+			padding: 2rem 1rem 6rem;
+			max-width: 640px;
+			margin: 0 auto;
+		}
+		.back-wrap {
+			text-align: left;
+			margin-bottom: 2rem;
+		}
+		.btn-back {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 12px 24px;
+			background: rgba(196, 69, 105, 0.2);
+			color: #e8a0b8;
+			border: 1px solid rgba(232, 160, 184, 0.5);
+			border-radius: 30px;
+			text-decoration: none;
+			font-family: 'Outfit', sans-serif;
+			font-size: 14px;
+			font-weight: 500;
+			transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+		}
+		.btn-back:hover {
+			background: rgba(196, 69, 105, 0.35);
+			transform: translateX(-4px);
+			box-shadow: 0 4px 20px rgba(232, 160, 184, 0.2);
+			color: #f5f0e6;
+		}
+
+		/* Envelope */
+		.envelope-wrap {
+			perspective: 800px;
+			margin-bottom: 2rem;
+			text-align: center;
+		}
+		.envelope {
+			position: relative;
+			width: 200px;
+			height: 120px;
+			margin: 0 auto 1.5rem;
+			transition: transform 0.6s ease;
+		}
+		.envelope.open {
+			transform: rotateX(-120deg);
+			transform-style: preserve-3d;
+		}
+		.envelope-flap {
+			position: absolute;
+			top: 0; left: 0;
+			width: 0; height: 0;
+			border-left: 100px solid transparent;
+			border-right: 100px solid transparent;
+			border-top: 60px solid rgba(212, 175, 55, 0.3);
+			transform-origin: 50% 0;
+			transition: transform 0.8s ease;
+		}
+		.envelope.open .envelope-flap {
+			transform: rotateX(180deg);
+		}
+		.envelope-body {
+			position: absolute;
+			bottom: 0; left: 10px; right: 10px;
+			height: 80px;
+			background: rgba(232, 160, 184, 0.15);
+			border: 1px solid rgba(212, 175, 55, 0.4);
+			border-radius: 0 0 8px 8px;
+		}
+
+		/* Letter paper */
+		.letter-paper-wrap {
+			opacity: 0;
+			transform: translateY(30px) scale(0.98);
+			transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
+			pointer-events: none;
+		}
+		.letter-paper-wrap.visible {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+			pointer-events: auto;
+		}
+		.letter-paper {
+			background: linear-gradient(180deg, #f5f0e6 0%, #ebe5d8 100%);
+			border: 1px solid #d4c4a8;
+			border-radius: 8px;
+			padding: 2.5rem 2rem;
+			box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(212, 196, 168, 0.3);
+		}
+
+		/* IMAGE STYLES */
+		.letter-image {
+			width: 100%;
+			height: auto;
+			border-radius: 6px;
+			display: block;
+			margin: 0 auto;
+			cursor: pointer;
+		}
+
+		/* Fallback message if image fails */
+		.img-error-msg {
+			display: none;
+			text-align: center;
+			color: #c44569;
+			font-family: 'Outfit', sans-serif;
+			font-size: 14px;
+			padding: 2rem;
+			border: 2px dashed rgba(196, 69, 105, 0.4);
+			border-radius: 8px;
+			margin-top: 1rem;
+		}
+
+		.btn-download {
+			display: inline-block;
+			margin-top: 1.5rem;
+			padding: 12px 28px;
+			border: 2px solid #c44569;
+			color: #c44569;
+			background: transparent;
+			border-radius: 30px;
+			font-family: 'Outfit', sans-serif;
+			font-size: 14px;
+			text-decoration: none;
+			transition: background 0.3s, color 0.3s;
+		}
+		.btn-download:hover {
+			background: rgba(196, 69, 105, 0.2);
+			color: #e8a0b8;
+		}
+
+		/* ============================================
+		   MUSIC TOGGLE BUTTON — matches index.html
+		   ============================================ */
+		.music-toggle-btn {
+			position: fixed;
+			bottom: 28px;
+			right: 28px;
+			z-index: 9999;
+			width: 52px;
+			height: 52px;
+			border-radius: 50%;
+			border: 2px solid rgba(212, 175, 55, 0.6);
+			background: rgba(15, 15, 15, 0.85);
+			backdrop-filter: blur(8px);
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 22px;
+			box-shadow: 0 4px 24px rgba(212, 175, 55, 0.25);
+			transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+			outline: none;
+		}
+		.music-toggle-btn:hover {
+			transform: scale(1.12);
+			box-shadow: 0 6px 32px rgba(232, 160, 184, 0.4);
+			border-color: rgba(232, 160, 184, 0.8);
+		}
+		.music-toggle-btn:active {
+			transform: scale(0.96);
+		}
+		.music-icon { line-height: 1; }
+		.music-icon.music-on  { display: none; }
+		.music-icon.music-off { display: block; }
+		.music-toggle-btn.playing .music-icon.music-on  { display: block; }
+		.music-toggle-btn.playing .music-icon.music-off { display: none; }
+
+		/* Pulse ring when music is playing */
+		.music-toggle-btn.playing::after {
+			content: '';
+			position: absolute;
+			inset: -6px;
+			border-radius: 50%;
+			border: 2px solid rgba(232, 160, 184, 0.35);
+			animation: music-pulse 2s ease-out infinite;
+		}
+		@keyframes music-pulse {
+			0%   { transform: scale(1);   opacity: 0.7; }
+			100% { transform: scale(1.5); opacity: 0; }
+		}
+
+		/* Sparkle burst particles */
+		.sparkle-burst {
+			position: fixed;
+			pointer-events: none;
+			z-index: 9998;
+		}
+		.sparkle-burst span {
+			position: absolute;
+			font-size: 18px;
+			animation: sparkle-fly 1.2s ease-out forwards;
+		}
+		@keyframes sparkle-fly {
+			0%   { transform: translate(0, 0) scale(1);   opacity: 1; }
+			100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+		}
+
+		@media print {
+			.letter-bg, .back-wrap, .envelope-wrap, .btn-download, .music-toggle-btn { display: none !important; }
+			.letter-page { background: #fff; }
+			.letter-paper-wrap { opacity: 1 !important; transform: none !important; }
+			.letter-paper { box-shadow: none; border: 1px solid #ccc; }
+		}
+	</style>
+</head>
+<body class="letter-page">
+
+	<div class="letter-bg">
+		<div class="letter-bg-gradient"></div>
+		<div class="letter-bg-hearts" id="letter-hearts"></div>
+	</div>
+
+	<div class="letter-container">
+
+		<div class="back-wrap">
+			<a href="index.html" class="btn-back">← Back to surprise</a>
+		</div>
+
+		<div class="envelope-wrap">
+			<div class="envelope" id="envelope">
+				<div class="envelope-flap"></div>
+				<div class="envelope-body"></div>
+			</div>
+		</div>
+
+		<div class="letter-paper-wrap" id="letter-paper-wrap">
+			<div class="letter-paper">
+
+				<!-- ✅ Change src to your actual letter image filename -->
+				<img
+					src="images/letterrr.jpeg"
+					alt="Birthday Letter"
+					class="letter-image"
+					id="letter-img"
+					onerror="this.style.display='none'; document.getElementById('img-error').style.display='block';"
+				>
+
+				<!-- Shows if image fails to load -->
+				<div class="img-error-msg" id="img-error">
+					⚠️ Image not found!<br><br>
+					Please make sure your image file (e.g. <strong>letter.jpg</strong>) is in the
+					<strong>same folder</strong> as this HTML file.<br><br>
+					Then update the <code>src="letter.jpg"</code> in the code to match your exact filename.
+				</div>
+
+				<!-- ✅ Change href to your actual image filename -->
+				<a href="images/letterrr.jpeg" download="birthday-letter.jpg" class="btn-download">
+					⬇ Download JPG
+				</a>
+
+			</div>
+		</div>
+
+	</div>
+
+	<!-- ============================================================
+	     MUSIC TOGGLE BUTTON (fixed, bottom-right — same as index.html)
+	     ============================================================ -->
+	<button type="button" id="music-toggle" class="music-toggle-btn" title="Toggle background music" aria-label="Toggle music">
+		<span class="music-icon music-off">🔇</span>
+		<span class="music-icon music-on">🎵</span>
+	</button>
+
+	<!-- ============================================================
+	     AUDIO ELEMENTS — uses same sounds/ folder as index.html
+	     ============================================================ -->
+	<!-- Romantic background music (looped, same file as index.html) -->
+	<audio id="romantic-music" preload="auto" loop>
+		<source src="sounds/letter.mp3" type="audio/mpeg">
+	</audio>
+	<!-- Sparkle sound (used on envelope open + image click) -->
+	<!-- <audio id="sparkle-sound" preload="auto">
+		<source src="sounds/sparkle.mp3" type="audio/mpeg">
+	</audio> -->
+	<!-- Envelope open sound (falls back to sparkle if no envelope.mp3) -->
+	<!-- <audio id="envelope-sound" preload="auto">
+		<source src="sounds/envelope.mp3" type="audio/mpeg">
+		<source src="sounds/sparkle.mp3" type="audio/mpeg">
+	</audio> -->
+
+	<script>
+	(function () {
+
+		/* ── 1. Floating hearts background ── */
+		var heartsEl = document.getElementById('letter-hearts');
+		if (heartsEl) {
+			var symbols = ['❤️', '💕', '💗', '💖'];
+			for (var i = 0; i < 12; i++) {
+				var h = document.createElement('span');
+				h.textContent = symbols[i % symbols.length];
+				h.style.left  = Math.random() * 100 + '%';
+				h.style.top   = Math.random() * 100 + '%';
+				h.style.animationDelay = (Math.random() * 5) + 's';
+				heartsEl.appendChild(h);
+			}
+		}
+
+		/* ── 2. Audio elements ── */
+		var romanticMusic  = document.getElementById('romantic-music');
+		var sparkleSound   = document.getElementById('sparkle-sound');
+		var envelopeSound  = document.getElementById('envelope-sound');
+		var musicToggleBtn = document.getElementById('music-toggle');
+		var musicPlaying   = false;
+
+		// Volume levels — same feel as index.html
+		if (romanticMusic) romanticMusic.volume = 0.35;
+		if (sparkleSound)  sparkleSound.volume  = 0.55;
+		if (envelopeSound) envelopeSound.volume  = 0.5;
+
+		function tryPlay(audio) {
+			if (!audio) return;
+			audio.currentTime = 0;
+			var p = audio.play();
+			if (p && p.catch) p.catch(function () {});
+		}
+
+		function tryPause(audio) {
+			if (!audio) return;
+			try { audio.pause(); } catch (e) {}
+		}
+
+		/* ── 3. Music toggle button ── */
+		if (musicToggleBtn) {
+			musicToggleBtn.addEventListener('click', function () {
+				if (musicPlaying) {
+					tryPause(romanticMusic);
+					musicToggleBtn.classList.remove('playing');
+					musicPlaying = false;
+				} else {
+					tryPlay(romanticMusic);
+					musicToggleBtn.classList.add('playing');
+					musicPlaying = true;
+				}
+			});
+		}
+
+		/* ── 4. Auto-start music on first interaction (same as index.html) ── */
+		var autoStartDone = false;
+		function autoStartMusic() {
+			if (autoStartDone || musicPlaying) return;
+			autoStartDone = true;
+			tryPlay(romanticMusic);
+			if (musicToggleBtn) musicToggleBtn.classList.add('playing');
+			musicPlaying = true;
+		}
+		document.addEventListener('click',     autoStartMusic);
+		document.addEventListener('touchstart', autoStartMusic);
+		document.addEventListener('keydown',   autoStartMusic);
+
+		/* ── 5. Sparkle burst visual effect ── */
+		function spawnSparkleBurst(x, y) {
+			var emojis = ['✨', '💖', '🌸', '⭐', '💫', '🎀'];
+			var burst  = document.createElement('div');
+			burst.className = 'sparkle-burst';
+			burst.style.left = x + 'px';
+			burst.style.top  = y + 'px';
+			for (var i = 0; i < 10; i++) {
+				var s    = document.createElement('span');
+				s.textContent = emojis[i % emojis.length];
+				var angle = (i / 10) * 360;
+				var dist  = 60 + Math.random() * 60;
+				var dx    = Math.cos(angle * Math.PI / 180) * dist;
+				var dy    = Math.sin(angle * Math.PI / 180) * dist;
+				s.style.setProperty('--dx', dx + 'px');
+				s.style.setProperty('--dy', dy + 'px');
+				s.style.animationDelay = (Math.random() * 0.15) + 's';
+				burst.appendChild(s);
+			}
+			document.body.appendChild(burst);
+			setTimeout(function () { burst.remove(); }, 1500);
+		}
+
+		/* ── 6. Envelope open + letter reveal + sounds ── */
+		var envelope   = document.getElementById('envelope');
+		var letterWrap = document.getElementById('letter-paper-wrap');
+
+		if (envelope && letterWrap) {
+			// Step 1 — open envelope with sound
+			setTimeout(function () {
+				envelope.classList.add('open');
+				tryPlay(envelopeSound);
+				var r = envelope.getBoundingClientRect();
+				spawnSparkleBurst(r.left + r.width / 2, r.top + r.height / 2);
+			}, 400);
+
+			// Step 2 — reveal letter with sparkle
+			setTimeout(function () {
+				letterWrap.classList.add('visible');
+				tryPlay(sparkleSound);
+				var r2 = letterWrap.getBoundingClientRect();
+				spawnSparkleBurst(r2.left + r2.width / 2, r2.top + 60);
+			}, 1100);
+		}
+
+		/* ── 7. Sparkle on image click ── */
+		var letterImg = document.getElementById('letter-img');
+		if (letterImg) {
+			letterImg.addEventListener('click', function (e) {
+				tryPlay(sparkleSound);
+				spawnSparkleBurst(e.clientX, e.clientY);
+			});
+		}
+
+	})();
+	</script>
+
+</body>
+</html>
